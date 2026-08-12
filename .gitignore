@@ -8,3 +8,4 @@ web/public/core/
 *.tsbuildinfo
 .DS_Store
 .wrangler/
+

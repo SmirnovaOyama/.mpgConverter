@@ -25,10 +25,10 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "dev": "node src/cli.ts",
+    "dev": "vite",
+    "cli": "node src/cli.ts",
     "test": "node --test test/*.test.ts",
     "prepublishOnly": "npm run build",
-    "web:dev": "vite",
     "web:build": "vite build",
     "web:preview": "vite preview",
     "web:core": "node scripts/copy-core.mjs",

@@ -12,7 +12,7 @@ export type { Locale };
 type Dictionary = Record<string, string>;
 
 const EN: Dictionary = {
-  "drop.title": "Drop the videos you want to convert here",
+  "drop.title": "Drop the videos to convert here",
   "drop.aria": "Choose video files to convert",
   "drop.browse": "or click here to browse and select files",
   "drop.sample": "try a sample",

@@ -211,6 +211,18 @@ input[type="text"]:focus-visible {
   border-bottom-color: var(--accent);
 }
 
+/*
+ * iOS zooms the page in whenever a focused text field is smaller than 16px, and
+ * never zooms back out. Meeting that threshold on touch devices avoids it
+ * without a `user-scalable=no` viewport, which would also take away the pinch
+ * zoom people rely on.
+ */
+@media (pointer: coarse) {
+  input[type="text"] {
+    font-size: 16px;
+  }
+}
+
 /* --- Custom listbox, standing in for <select> --- */
 .select {
   position: relative;
@@ -581,7 +593,8 @@ button {
 .foot {
   position: fixed;
   inset: auto 0 0;
-  padding: 1.75rem 1.25rem 1rem;
+  /* Side padding keeps the text clear of the GitHub link in the corner. */
+  padding: 1.75rem 3.25rem 1rem;
   font-size: 0.8rem;
   color: var(--ink-faint);
   text-align: center;
@@ -591,7 +604,35 @@ button {
   pointer-events: none;
 }
 
+/* Sits above the footer, which is inert, so the link stays clickable. */
+.github {
+  position: fixed;
+  right: 1rem;
+  bottom: 0.85rem;
+  z-index: 40;
+  display: inline-flex;
+  padding: 0.4rem;
+  color: var(--ink-faint);
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.github svg {
+  width: 18px;
+  height: 18px;
+}
+
+.github:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 @media (max-width: 560px) {
+  /* The pinned footer wraps to two lines here, so it needs more clearance. */
+  body {
+    padding-bottom: 7rem;
+  }
+
   .dropzone {
     padding: 3.5rem 1rem;
   }
@@ -643,6 +684,11 @@ button {
 
   .icon-only:hover {
     color: var(--ink);
+  }
+
+  .github:hover {
+    color: var(--ink);
+    background: var(--panel-2);
   }
 }
 

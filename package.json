@@ -1,0 +1,59 @@
+{
+  "name": "mpg-converter",
+  "version": "1.0.0",
+  "description": "Convert any video file to MPEG program stream (.mpg) via ffmpeg",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "bin": {
+    "mpgconv": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "dev": "node src/cli.ts",
+    "test": "node --test test/*.test.ts",
+    "prepublishOnly": "npm run build",
+    "web:dev": "vite",
+    "web:build": "vite build",
+    "web:preview": "vite preview",
+    "web:core": "node scripts/copy-core.mjs",
+    "typecheck:web": "tsc -p web/tsconfig.json",
+    "deploy": "npm run web:build && wrangler deploy"
+  },
+  "optionalDependencies": {
+    "ffmpeg-static": "^5.2.0"
+  },
+  "devDependencies": {
+    "@ffmpeg/core": "^0.12.10",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
+    "@types/node": "^22.15.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.2.1",
+    "wrangler": "^4.121.0"
+  },
+  "keywords": [
+    "ffmpeg",
+    "mpeg",
+    "mpg",
+    "video",
+    "converter",
+    "transcode",
+    "cli"
+  ]
+}

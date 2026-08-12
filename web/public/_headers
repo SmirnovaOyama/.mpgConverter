@@ -1,0 +1,7 @@
+# Vite fingerprints these, so they can be cached indefinitely.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The self-hosted ffmpeg core, when present, is version-pinned by path.
+/core/*
+  Cache-Control: public, max-age=31536000, immutable

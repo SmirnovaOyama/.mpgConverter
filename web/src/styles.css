@@ -1,0 +1,654 @@
+/*
+ * Warm cream paper, ink text, one coral accent.
+ *
+ * Light only — no dark theme. `color-scheme` tells the browser so that form
+ * controls, scrollbars and focus rings stay light even when the OS is dark.
+ */
+:root {
+  color-scheme: light;
+
+  --bg: #faf9f5;
+  --panel: #ffffff;
+  --panel-2: #f3f1ea;
+  --ink: #1f1e1d;
+  --ink-soft: #6f6b62;
+  --ink-faint: #97928a;
+  --line: #e4e1d7;
+  --line-strong: #d5d1c4;
+  --accent: #c96442;
+  --accent-hover: #b3563a;
+  --accent-wash: #f7ece7;
+  --err: #b3402e;
+  --err-wash: #faeae7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* A class-level `display` outranks the user-agent `[hidden]` rule, so state the
+   intent explicitly — otherwise hiding an element in JS silently does nothing. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  /* Bottom padding clears the pinned footer. */
+  padding: 1.5rem 1.25rem 5rem;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+    Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* --- Header --- */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  margin-bottom: 3.5rem;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+/*
+ * Fixed widths so the header does not reflow on a language switch.
+ *
+ * Each is measured from its own longest label rather than shared, because one
+ * width wide enough for every button pads the short ones out with dead space
+ * that reads as an oversized gap. Values: "中文" 53.6px, "Settings" 104.1px.
+ */
+#language {
+  min-width: 3.4rem;
+}
+
+#settings-toggle {
+  min-width: 6.55rem;
+}
+
+.icon-button[aria-expanded="true"] {
+  color: var(--ink);
+  background: var(--panel-2);
+  border-color: var(--line);
+}
+
+.icon-button svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* --- Drop zone: the whole page, on arrival --- */
+.dropzone {
+  display: grid;
+  place-items: center;
+  gap: 0.6rem;
+  padding: 5rem 1.5rem;
+  text-align: center;
+  background: transparent;
+  border: 1px dashed var(--line-strong);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.dropzone:focus-visible {
+  border-color: var(--accent);
+  background: var(--panel);
+  outline: none;
+}
+
+.dropzone.dragging {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+.dropzone h1 {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+    Helvetica, Arial, sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+}
+
+.drop-sub {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+}
+
+.sample-line {
+  margin: 0.9rem 0 0;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--ink-faint);
+}
+
+/* A whole sentence, so no underline — the drop zone itself signals the click. */
+.link {
+  color: var(--ink-faint);
+}
+
+.linkbutton {
+  padding: 0;
+  font: inherit;
+  color: var(--ink-soft);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line-strong);
+}
+
+/* --- Settings: no card, just fields on the page --- */
+.settings {
+  margin-top: 2.25rem;
+}
+
+.row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.row.four {
+  margin-top: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+label,
+.label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+/* Inputs are a single rule under the text, nothing more. */
+input[type="text"] {
+  width: 100%;
+  padding: 0.35rem 0;
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+}
+
+input[type="text"]:focus-visible {
+  outline: none;
+  border-bottom-color: var(--accent);
+}
+
+/* --- Custom listbox, standing in for <select> --- */
+.select {
+  position: relative;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.35rem 0;
+  font: inherit;
+  font-size: 0.92rem;
+  text-align: left;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  cursor: pointer;
+}
+
+.select-trigger:focus-visible,
+.select-trigger[aria-expanded="true"] {
+  outline: none;
+  border-bottom-color: var(--accent);
+}
+
+.select-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.select-chevron {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  color: var(--ink-faint);
+  transition: transform 0.15s;
+}
+
+.select-trigger[aria-expanded="true"] .select-chevron {
+  transform: rotate(180deg);
+}
+
+.select-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 250px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+}
+
+.select-option {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.select-option.active {
+  background: var(--panel-2);
+}
+
+.select-option[aria-selected="true"] {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.84rem;
+  color: var(--ink-faint);
+}
+
+/*
+ * --- Actions ---
+ *
+ * Same visual language as the settings fields: no fills, no boxes, just a
+ * hairline under the label.
+ */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+button {
+  font: inherit;
+}
+
+.primary,
+.ghost {
+  padding: 0.3rem 0;
+  font-size: 0.92rem;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 7px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+.primary {
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+.primary:disabled {
+  color: var(--ink-faint);
+  text-decoration-color: var(--line-strong);
+  cursor: not-allowed;
+}
+
+/* Secondary, but still clearly a control: full-strength ink over a solid rule. */
+.ghost {
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration-color: var(--ink-soft);
+}
+
+.primary:focus-visible,
+.ghost:focus-visible {
+  outline: none;
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/*
+ * Per-button widths, each sized to its own longest label across both
+ * languages, so the row keeps its geometry on a language switch without
+ * padding the short buttons into an oversized gap.
+ * Measured: 开始转换 60.1, Download all 87.9, Cancel 47.4, Clear 36.3.
+ */
+#convert {
+  min-width: 3.85rem;
+}
+
+#download-all {
+  min-width: 5.5rem;
+}
+
+#cancel {
+  min-width: 3rem;
+}
+
+#clear {
+  min-width: 2.3rem;
+}
+
+.status {
+  /* Pushes the button group to the right edge, empty or not. */
+  margin-right: auto;
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+}
+
+/* --- Engine loader --- */
+.loader {
+  margin-top: 1.25rem;
+}
+
+.loader-bar {
+  height: 3px;
+  background: var(--panel-2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.loader-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
+/* --- Queue: rows separated by a rule, matching the settings fields --- */
+.queue {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.queue:empty {
+  margin: 0;
+}
+
+.item {
+  padding: 0.9rem 0;
+  background: transparent;
+  border-top: 1px solid var(--line);
+}
+
+.item-head {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.item-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.item-index {
+  margin-right: 0.4rem;
+  font-weight: 400;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.item-meta {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+/*
+ * Sits below the state row, so the rule reads as that row's underline.
+ *
+ * No track colour: an empty track would sit a couple of pixels above the next
+ * row's separator and read as two parallel lines. Only the filled portion is
+ * ever drawn, so an unstarted row shows nothing at all.
+ */
+.bar {
+  height: 2px;
+  margin: 0.55rem 0 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.25s;
+}
+
+.item.failed .fill {
+  background: var(--err);
+  width: 100% !important;
+}
+
+.item.cancelled .fill {
+  background: var(--line-strong);
+}
+
+/* An unknown duration means no meaningful percentage; show motion instead. */
+.item.indeterminate .fill {
+  width: 35% !important;
+  animation: slide 1.4s ease-in-out infinite;
+}
+
+@keyframes slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(340%); }
+}
+
+.item-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 0.7rem;
+  font-size: 0.85rem;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.state {
+  color: var(--ink-faint);
+}
+
+.item.failed .state {
+  color: var(--err);
+}
+
+.download {
+  padding: 0.1rem 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: transparent;
+  text-decoration: none;
+}
+
+.icon-only {
+  display: inline-flex;
+  padding: 0.2rem;
+  color: var(--ink-faint);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.icon-only svg {
+  width: 15px;
+  height: 15px;
+}
+
+.notes {
+  list-style: none;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.notes:empty {
+  display: none;
+}
+
+.notes li {
+  padding-left: 1.15rem;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  position: relative;
+}
+
+/* A tick rather than a bullet: each note is an adjustment already applied. */
+.notes li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-size: 0.9em;
+}
+
+.notes li.error {
+  padding: 0.5rem 0.7rem;
+  color: var(--err);
+  background: var(--err-wash);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-x: auto;
+}
+
+.notes li.error::before {
+  display: none;
+}
+
+/* --- Footer: pinned to the bottom of the viewport --- */
+.foot {
+  position: fixed;
+  inset: auto 0 0;
+  padding: 1.75rem 1.25rem 1rem;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  text-align: center;
+  /* Fades content out as it scrolls underneath instead of cutting it off. */
+  background: linear-gradient(to top, var(--bg) 55%, transparent);
+  /* Non-interactive text; never intercept a click meant for the page. */
+  pointer-events: none;
+}
+
+@media (max-width: 560px) {
+  .dropzone {
+    padding: 3.5rem 1rem;
+  }
+
+  .dropzone h1 {
+    font-size: 1.6rem;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Hover styles only where a real pointer exists. On touch screens these stick
+   after a tap, leaving buttons looking permanently pressed. */
+@media (hover: hover) {
+  .icon-button:hover {
+    color: var(--ink);
+    background: var(--panel-2);
+  }
+
+  .dropzone:hover {
+    border-color: var(--accent);
+    background: var(--panel);
+  }
+
+  .dropzone:hover .link {
+    color: var(--accent);
+  }
+
+  .linkbutton:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+
+  .primary:hover:not(:disabled) {
+    color: var(--accent-hover);
+    text-decoration-color: var(--accent-hover);
+  }
+
+  .download:hover {
+    color: var(--accent-hover);
+  }
+
+  .ghost:hover {
+    color: var(--ink);
+    text-decoration-color: var(--ink);
+  }
+
+  .icon-only:hover {
+    color: var(--ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mpgconv",
+  "compatibility_date": "2026-08-12",
+
+  // Static-assets-only Worker: there is no server code, because the conversion
+  // happens in the visitor's browser. `npm run web:build` fills this directory.
+  "assets": {
+    "directory": "./web/dist",
+    "not_found_handling": "single-page-application"
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+web/dist/
+# 32 MB wasm core, staged locally by `npm run web:core`
+web/public/core/
+*.mpg
+*.part
+*.tsbuildinfo
+.DS_Store
+.wrangler/

@@ -9,3 +9,4 @@ web/public/core/
 .DS_Store
 .wrangler/
 
+/.claude/

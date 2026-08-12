@@ -23,12 +23,12 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && vite build",
     "typecheck": "tsc --noEmit",
     "dev": "vite",
     "cli": "node src/cli.ts",
     "test": "node --test test/*.test.ts",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "tsc",
     "web:build": "vite build",
     "web:preview": "vite preview",
     "web:core": "node scripts/copy-core.mjs",
